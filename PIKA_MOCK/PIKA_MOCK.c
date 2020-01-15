@@ -25,7 +25,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;
 	RegisterClass(&WndClass);
 
-	hWnd = CreateWindowExA(
+	hWnd = CreateWindowEx(
 		WS_EX_TOPMOST,
 		lpszClass,
 		lpszClass,
