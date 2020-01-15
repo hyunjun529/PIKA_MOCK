@@ -1,13 +1,14 @@
 # PIKA_MOCK
-WinAPI to SDL for https://github.com/disjukr/PIKA_V
+WinAPI to WASM for https://github.com/disjukr/PIKA_V
 
 but there are only features for game animation, scene, event, keyboard Input(e.g DC, GDI, Keyboard, Timer, Rect...etc). so there are no audio like midi, windows event, File I/O, AI.
 
 ## reference
 - https://soen.kr
-- https://github.com/timhutton/sdl-canvas-wasm
+- ~~https://github.com/timhutton/sdl-canvas-wasm~~
+- https://docs.rs/winapi/0.3.8/winapi/
 
-## target
+## target WinAPI
 - http://soen.kr/lecture/win32api/reference/Function/MoveWindow.htm
 - http://soen.kr/lecture/win32api/reference/Function/GetWindowRect.htm
 - http://soen.kr/lecture/win32api/reference/Function/BeginPaint.htm
