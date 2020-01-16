@@ -3,16 +3,26 @@
 #[cfg(windows)] extern crate user32;
 
 use std::io::Error;
+use std::mem::{size_of, zeroed};
 
-use winapi::shared::minwindef::{UINT, WPARAM, LPARAM, LRESULT, LPVOID, HINSTANCE};
-use winapi::shared::windef::{HWND, HMENU, HICON, HCURSOR, HBRUSH};
-use winapi::um::wingdi::{GetStockObject, WHITE_BRUSH};
-use winapi::um::winnt::{LPCSTR, LPCWSTR};
-use winapi::um::winuser::{WNDPROC, MSG, TranslateMessage, WNDCLASSA, RegisterClassA, LoadCursorA, LoadIconA, GetMessageA, DispatchMessageA}; // functions
-use winapi::um::winuser::{IDI_APPLICATION, IDC_ARROW, CS_HREDRAW, CS_VREDRAW, WS_EX_TOPMOST, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT}; // const variable
+// use winapi::minwindef::{UINT, WPARAM, LPARAM, LRESULT, LPVOID, HINSTANCE};
+// use winapi::windef::{HWND, HMENU, HICON, HCURSOR, HBRUSH};
+// use winapi::winnt::{LPCSTR, LPCWSTR}; // don't use LPCSTR !!! // ref : MAKEINERSOURCE
+// use winapi::winuser::{WNDPROC, MSG, WNDCLASSEXW, LoadCursorW, LoadIconW, GetMessageW, DispatchMessageW}; // functions
+// use winapi::winuser::{IDI_APPLICATION, IDC_ARROW, CS_HREDRAW, CS_VREDRAW, WS_EX_TOPMOST, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, WM_DESTROY}; // const variable
+// use kernel32::{GetModuleHandleW};
+// use user32::{CreateWindowExW, ShowWindow, RegisterClassExW}; // WinMain
+// use user32::{DefWindowProcW, PostQuitMessage}; // WndProc
+
+use winapi::{UINT, WPARAM, LPARAM, LRESULT, LPVOID, LPCSTR, LPCWSTR, HINSTANCE};
+use winapi::{HWND, HMENU, HBRUSH};
+use winapi::{IDI_APPLICATION, IDC_ARROW};
+use winapi::{WNDCLASSEXW, CS_VREDRAW, CS_HREDRAW, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, WS_EX_TOPMOST};
+use winapi::{SW_SHOWDEFAULT, WM_DESTROY};
 use kernel32::{GetModuleHandleA};
-use user32::{CreateWindowExA, ShowWindow}; // WinMain
-use user32::{DefWindowProcA, PostQuitMessage, BeginPaint}; // WndProc
+use user32::{RegisterClassExW, CreateWindowExW, ShowWindow, MessageBoxA, LoadCursorW, LoadIconW};
+use user32::{GetMessageW, TranslateMessage, DispatchMessageW};
+use user32::{DefWindowProcW, PostQuitMessage};
 
 fn to_wstring(str : &str) -> Vec<u16> {
     use std::ffi::OsStr;
@@ -31,7 +41,7 @@ fn wnd_proc(hwnd: HWND, msg: UINT, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
             PostQuitMessage(0); 0
         },
         _ => {
-            DefWindowProcA(hwnd, msg, wparam, lparam) // A쓰지마
+            DefWindowProcW(hwnd, msg, wparam, lparam)
         }
     }
 }
@@ -41,26 +51,77 @@ fn print_message(msg: &str) -> Result<i32, Error> {
     let wide: Vec<u16> = to_wstring(msg);
 
     let ret = unsafe {
-        // use winapi::um::winuser::{MB_OK, MessageBoxW};
-        // use std::ptr::null_mut;
-        // MessageBoxW(null_mut(), wide.as_ptr(), wide.as_ptr(), MB_OK)
+        let h_instance = GetModuleHandleA(0 as LPCSTR);
 
-        let wndclass = WNDCLASSA {
+        let wndclass = WNDCLASSEXW {
+            cbSize: size_of::<WNDCLASSEXW>() as u32,
             cbClsExtra: 0,
             cbWndExtra: 0,
             hbrBackground: 16 as HBRUSH,
-            hCursor: LoadCursorA(0 as HINSTANCE, IDC_ARROW), // IDC_ARROW A가 없다, 무조건 W임
-            hIcon: LoadIconA(0 as HINSTANCE, winapi::winuser::IDI_APPLICATION),
-            hInstance: 0 as HINSTANCE,
-            lpfnWndProc: Some(window_proc), 
-            lpszClassName: class_name.as_ptr(),
-            lpszMenuName: 0 as LPCSTR,
+            hCursor: LoadCursorW(0 as HINSTANCE, IDC_ARROW), // IDC_ARROW A가 없다, 무조건 W임
+            hIcon: LoadIconW(0 as HINSTANCE, IDI_APPLICATION),
+            hIconSm: LoadIconW(0 as HINSTANCE, IDI_APPLICATION),
+            hInstance: h_instance,
+            lpfnWndProc: Some(wnd_proc), 
+            lpszClassName: wide.as_ptr(),
+            lpszMenuName: 0 as LPCWSTR,
             style: CS_HREDRAW | CS_VREDRAW,
         };
+
+        let window = CreateWindowExW(
+            WS_EX_TOPMOST,
+            wide.as_ptr(),
+            wide.as_ptr(),
+            WS_OVERLAPPEDWINDOW,
+            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+            0 as winapi::windef::HWND, 0 as winapi::windef::HMENU,
+            h_instance,
+            0 as *mut std::ffi::c_void
+        );
+        
+        match RegisterClassExW(&wndclass) {
+            0 => {
+                MessageBoxA(
+                    0 as HWND,
+                    b"Call to RegisterClassEx failed!\0".as_ptr() as *const i8,
+                    b"Win32 Guided Tour\0".as_ptr() as *const i8,
+                    0 as UINT
+                );
+            },
+            _atom => {
+                let window = CreateWindowExW(
+                    WS_EX_TOPMOST,
+                    wide.as_ptr(),
+                    wide.as_ptr(),
+                    WS_OVERLAPPEDWINDOW,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                    0 as HWND, 0 as HMENU,
+                    h_instance,
+                    0 as LPVOID
+                );
+                if window.is_null() {
+                    MessageBoxA(
+                        0 as HWND,
+                        b"Call to CreateWindow failed!\0".as_ptr() as *const i8,
+                        b"Win32 Guided Tour\0".as_ptr() as *const i8,
+                        0 as UINT
+                    );
+                } else {
+                    ShowWindow(window, SW_SHOWDEFAULT);
+                    let mut msg = zeroed();
+                    while GetMessageW(&mut msg, 0 as HWND, 0, 0) != 0 {
+                        TranslateMessage(&msg);
+                        DispatchMessageW(&msg);
+                    }
+                }
+            }
+        }
     };
 
-    if ret == 0 { Err(Error::last_os_error()) }
-    else { Ok(ret) }
+    // if ret == 0 { Err(Error::last_os_error()) }
+    // else { Ok(ret) }
+
+    return Ok(0);
 }
 
 #[cfg(not(windows))]
