@@ -1,29 +1,17 @@
 #[cfg(windows)] extern crate winapi;
-#[cfg(windows)] extern crate kernel32;
-#[cfg(windows)] extern crate user32;
 
 use std::io::Error;
 use std::mem::{size_of, zeroed};
 
-// use winapi::minwindef::{UINT, WPARAM, LPARAM, LRESULT, LPVOID, HINSTANCE};
-// use winapi::windef::{HWND, HMENU, HICON, HCURSOR, HBRUSH};
-// use winapi::winnt::{LPCSTR, LPCWSTR}; // don't use LPCSTR !!! // ref : MAKEINERSOURCE
-// use winapi::winuser::{WNDPROC, MSG, WNDCLASSEXW, LoadCursorW, LoadIconW, GetMessageW, DispatchMessageW}; // functions
-// use winapi::winuser::{IDI_APPLICATION, IDC_ARROW, CS_HREDRAW, CS_VREDRAW, WS_EX_TOPMOST, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, WM_DESTROY}; // const variable
-// use kernel32::{GetModuleHandleW};
-// use user32::{CreateWindowExW, ShowWindow, RegisterClassExW}; // WinMain
-// use user32::{DefWindowProcW, PostQuitMessage}; // WndProc
+#[cfg(windows)]
+use winapi::shared::minwindef::{UINT, WPARAM, LPARAM, LRESULT, LPVOID, HINSTANCE};
+use winapi::shared::windef::{HWND, HMENU, HBRUSH};
+use winapi::um::winnt::{LPCSTR, LPCWSTR};
+use winapi::um::winuser::{WNDCLASSEXW, LoadCursorW, LoadIconW, GetMessageW, DispatchMessageW, RegisterClassExW, CreateWindowExW, ShowWindow, MessageBoxA, TranslateMessage, DefWindowProcW, PostQuitMessage}; // functions
+use winapi::um::winuser::{IDI_APPLICATION, IDC_ARROW, CS_HREDRAW, CS_VREDRAW, WS_EX_TOPMOST, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, WM_DESTROY, SW_SHOWDEFAULT}; // const variable
+use winapi::um::libloaderapi::GetModuleHandleA;
 
-use winapi::{UINT, WPARAM, LPARAM, LRESULT, LPVOID, LPCSTR, LPCWSTR, HINSTANCE};
-use winapi::{HWND, HMENU, HBRUSH};
-use winapi::{IDI_APPLICATION, IDC_ARROW};
-use winapi::{WNDCLASSEXW, CS_VREDRAW, CS_HREDRAW, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, WS_EX_TOPMOST};
-use winapi::{SW_SHOWDEFAULT, WM_DESTROY};
-use kernel32::{GetModuleHandleA};
-use user32::{RegisterClassExW, CreateWindowExW, ShowWindow, MessageBoxA, LoadCursorW, LoadIconW};
-use user32::{GetMessageW, TranslateMessage, DispatchMessageW};
-use user32::{DefWindowProcW, PostQuitMessage};
-
+#[cfg(windows)]
 fn to_wstring(str : &str) -> Vec<u16> {
     use std::ffi::OsStr;
     use std::iter::once;
@@ -74,9 +62,9 @@ fn print_message(msg: &str) -> Result<i32, Error> {
             wide.as_ptr(),
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-            0 as winapi::windef::HWND, 0 as winapi::windef::HMENU,
+            0 as HWND, 0 as HMENU,
             h_instance,
-            0 as *mut std::ffi::c_void
+            0 as *mut winapi::ctypes::c_void
         );
         
         match RegisterClassExW(&wndclass) {
