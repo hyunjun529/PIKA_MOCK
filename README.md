@@ -14,16 +14,16 @@ but there are only features for game animation, scene, event, keyboard Input(e.g
 - excute PIKA_MOCK.sln
 - `F5`
 
-### pika-game (rust)
+### pika-game (Rust)
 - this is just game logic & test
 
-### pika-wasm (rust, wasm-pack)
+### pika-wasm (Rust, wasm-pack)
 1. `wasm-pack build pika-wasm`
 2. `cd pika-wasm`
 3. `npm run serve`
    1. need `npm install`
 
-### pika-winapi (rust, winapi crate)
+### pika-winapi (Rust, winapi crate)
 - `cargo run -p pika-winapi`
 
 
