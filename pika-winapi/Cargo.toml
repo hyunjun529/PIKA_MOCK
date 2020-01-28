@@ -1,5 +1,5 @@
 [package]
-name = "PIKA_MOCK"
+name = "pika-winapi"
 version = "0.1.0"
 authors = ["hyunjun529 <hyunjun529@gmail.com>"]
 edition = "2018"

@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "pika-game",
+    "pika-winapi",
+    "pika-wasm",
+]
