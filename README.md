@@ -1,6 +1,4 @@
 # PIKA_MOCK
-[demo](https://blog.p316.net/PIKA_MOCK/pika-wasm/)
-
 WinAPI to WASM for https://github.com/disjukr/PIKA_V
 
 but there are only features for game animation, scene, event, keyboard Input(e.g DC, GDI, Keyboard, Timer, Rect...etc). so there are no audio like midi, windows event, File I/O, AI.
@@ -58,6 +56,7 @@ but there are only features for game animation, scene, event, keyboard Input(e.g
 ### wasm
 - ~~https://github.com/timhutton/sdl-canvas-wasm~~
 - https://developer.mozilla.org/ko/docs/WebAssembly/Rust_to_wasm
+- https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compileStreaming
 
 ### rust
 - https://docs.rs/winapi/0.3.8/winapi/
