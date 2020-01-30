@@ -3,7 +3,9 @@ WinAPI to WASM for https://github.com/disjukr/PIKA_V
 
 but there are only features for game animation, scene, event, keyboard Input(e.g DC, GDI, Keyboard, Timer, Rect...etc). so there are no audio like midi, windows event, File I/O, AI.
 
-야근이 끝나면 간단한 애니메이션 예제를 짤꺼야 < 
+야근이 끝나면 간단한 애니메이션 예제를 짤꺼야 
+
+- 회복기 잔디공사 입니다.
 
 ## build & run
 - i used VS2019
