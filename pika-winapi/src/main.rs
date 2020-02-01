@@ -1,4 +1,5 @@
 #[cfg(windows)] extern crate winapi;
+extern crate pika_game;
 
 use std::io::Error;
 use std::mem::{size_of, zeroed};
@@ -116,6 +117,9 @@ fn print_message(msg: &str) -> Result<(), Error> {
 }
 
 fn main() {
+    // test mod
+    pika_game::game::init();    
+
     // https://docs.rs/winapi/0.3.0/winapi/um/winuser/index.html
     // https://github.com/retep998/winapi-rs/issues/122
     // https://www.codeproject.com/Tips/1053658/Win-GUI-Programming-In-Rust-Language

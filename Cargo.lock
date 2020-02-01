@@ -75,6 +75,7 @@ dependencies = [
 name = "pika-winapi"
 version = "0.1.0"
 dependencies = [
+ "pika-game 0.1.0",
  "winapi 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
