@@ -38,7 +38,7 @@ fn wnd_proc(hwnd: HWND, msg: UINT, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
 fn print_message(msg: &str) -> Result<i32, Error> {
     let wide: Vec<u16> = to_wstring(msg);
 
-    let ret = unsafe {
+    unsafe {
         let h_instance = GetModuleHandleA(0 as LPCSTR);
 
         let wndclass = WNDCLASSEXW {
@@ -56,7 +56,7 @@ fn print_message(msg: &str) -> Result<i32, Error> {
             style: CS_HREDRAW | CS_VREDRAW,
         };
 
-        let window = CreateWindowExW(
+        CreateWindowExW(
             WS_EX_TOPMOST,
             wide.as_ptr(),
             wide.as_ptr(),
@@ -105,9 +105,6 @@ fn print_message(msg: &str) -> Result<i32, Error> {
             }
         }
     };
-
-    // if ret == 0 { Err(Error::last_os_error()) }
-    // else { Ok(ret) }
 
     return Ok(0);
 }
