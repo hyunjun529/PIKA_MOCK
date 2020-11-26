@@ -2,6 +2,7 @@
 
 - 리버스 엔지니어링 후 js로 재작성된 피카츄배구: https://github.com/gorisanson/pikachu-volleyball
 - 위 프로젝트에 p2p 네트워크 대전 기능을 넣은 버전: https://github.com/gorisanson/pikachu-volleyball-p2p-online
+- rust <> winapi : https://github.com/hyunjun529/winapi.rust
 
 # PIKA_MOCK
 WinAPI to WASM for https://github.com/disjukr/PIKA_V
